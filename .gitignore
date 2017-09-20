@@ -1,0 +1,14 @@
+.Rproj.user
+*.o
+*.so
+*.bak
+.Rhistory
+.DS_Store
+.Rapp.history
+README-cache/
+inst/doc
+vignettes/*.R
+*.html
+vignettes/*cache*
+vignettes/*files*
+
