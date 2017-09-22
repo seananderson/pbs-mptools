@@ -5,9 +5,7 @@
 #' @param filter_na Remove NAs?
 #' @param con A connection object to a database
 #' 
-#' @importFrom dplyr inner_join filter select collect tbl rename mutate
-#' @importFrom rlang .data
-#' @importFrom magrittr %>%
+#' @importFrom DBI dbGetQuery
 #' @export
 #' 
 #' @examples
@@ -21,35 +19,37 @@
 get_age_length <- function(species_id, survey_id, filter_na = TRUE,
   con = db_connection()) {
   
-  age_length <- tbl(con, "SURVEY") %>%
-    filter(.data$SURVEY_SERIES_ID == as.character(survey_id)) %>%
-    inner_join(tbl(con, "SURVEY_GROUPING"), by = "SURVEY_ID") %>%
-    inner_join(tbl(con, "FISHING_EVENT_GROUPING"), by = "GROUPING_CODE") %>%
-    inner_join(tbl(con, "B21_Samples") %>%
-        filter(.data$SPECIES_CODE == as.character(species_id)),
-      by = "FISHING_EVENT_ID") %>%
-    inner_join(tbl(con, "TRIP_SURVEY"), by = "SURVEY_ID") %>%
-    inner_join(tbl(con, "FISHING_EVENT"), by = c("TRIP_ID", "FISHING_EVENT_ID")) %>%
-    inner_join(tbl(con, "B22_Specimens"), by = "SAMPLE_ID") %>%
-    filter(.data$SPECIMEN_SEX_CODE %in% c(1, 2)) %>%
-    select(
-      .data$SPECIMEN_SEX_CODE, 
-      .data$SPECIMEN_AGE, 
-      .data$Best_Length, 
-      .data$TRIP_START_DATE) %>%
-    collect(n = Inf)
+  if (is.character(species_id)) 
+    species_id <- get_species_id(species_id)
+  
+  if (is.character(survey_id)) 
+    survey_id <- get_survey_id(survey_id)
+  
+  age_length <- dplyr::as.tbl(DBI::dbGetQuery(con, paste0("
+    SELECT YEAR(TRIP_START_DATE) AS year,
+    SPECIMEN_SEX_CODE AS sex,
+    SPECIMEN_AGE AS age,
+    CAST(ROUND(Best_Length / 10.0, 1) AS DECIMAL(8,1)) AS length
+    FROM GFBioSQL.dbo.SURVEY S
+    INNER JOIN GFBioSQL.dbo.SURVEY_GROUPING SG ON
+    S.SURVEY_ID = SG.SURVEY_ID
+    INNER JOIN GFBioSQL.dbo.FISHING_EVENT_GROUPING FEG ON
+    SG.GROUPING_CODE = FEG.GROUPING_CODE
+    INNER JOIN GFBioSQL.dbo.B21_Samples SM ON
+    FEG.FISHING_EVENT_ID = SM.FISHING_EVENT_ID
+    INNER JOIN GFBioSQL.dbo.TRIP_SURVEY TS ON
+    S.SURVEY_ID = TS.SURVEY_ID
+    INNER JOIN GFBioSQL.dbo.FISHING_EVENT FE ON
+    TS.TRIP_ID = FE.TRIP_ID AND
+    FE.FISHING_EVENT_ID = SM.FISHING_EVENT_ID
+    INNER JOIN GFBioSQL.dbo.B22_Specimens SP ON
+    SM.SAMPLE_ID = SP.SAMPLE_ID
+    WHERE S.SURVEY_SERIES_ID = '", survey_id, "' AND
+    SM.SPECIES_CODE = '", species_id, "' AND
+    SP.SPECIMEN_SEX_CODE IN (1, 2)")))
   
   if (filter_na) {
-    age_length <- age_length %>% 
-      filter(!is.na(.data$SPECIMEN_AGE), !is.na(.data$Best_Length))
+    age_length <- age_length[!is.na(age_length$age) & !is.na(age_length$length), ]
   }
-  
-  age_length <- rename(age_length,
-    sex = .data$SPECIMEN_SEX_CODE, 
-    age = .data$SPECIMEN_AGE,
-    length = .data$Best_Length,
-    date = .data$TRIP_START_DATE) %>%
-    mutate(length = round(.data$length / 10, 1))
-  
   age_length
 }

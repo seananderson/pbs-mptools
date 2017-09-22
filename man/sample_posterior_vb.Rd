@@ -16,5 +16,6 @@ Sample from a von Bertalanffy curve posterior
 }
 \examples{
 m <- fit_vb(short_age_length$age, short_age_length$length)
+set.seed(1)
 sample_posterior_vb(m, n = 5)
 }
