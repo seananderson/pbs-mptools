@@ -15,8 +15,10 @@ get_species_id(species_name = NULL, con = db_connection())
 Get a species ID given a species name
 }
 \examples{
+\dontrun{
 get_species_id("sebastes borealis")
 get_species_id("Sebastes borealis")
 get_species_id("SebAstEs BORealis")
 head(get_species_id())
+}
 }

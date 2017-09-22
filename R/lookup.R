@@ -3,11 +3,13 @@
 #' @param species_name A species name 
 #' @param con A connection object to a database
 #'
-#' @examples 
+#' @examples
+#' \dontrun{
 #' get_species_id("sebastes borealis")
 #' get_species_id("Sebastes borealis")
 #' get_species_id("SebAstEs BORealis")
 #' head(get_species_id())
+#' }
 #' @export
 get_species_id <- function(species_name = NULL, con = db_connection()) {
   lookup <- dbGetQuery(con, "
@@ -28,9 +30,11 @@ get_species_id <- function(species_name = NULL, con = db_connection()) {
 #' @param species_id A species ID code 
 #' @param con A connection object to a database
 #'
-#' @examples 
+#' @examples
+#' \dontrun{
 #' get_species_name(403)
 #' head(get_species_name())
+#' }
 #' @export
 get_species_name <- function(species_id = NULL, con = db_connection()) {
   lookup <- dbGetQuery(con, "
@@ -51,12 +55,14 @@ get_species_name <- function(species_id = NULL, con = db_connection()) {
 #' @param survey_name A survey name
 #' @param con A connection object to a database
 #'
-#' @examples 
+#' @examples
+#' \dontrun{
 #' get_survey_id("1989 Hecate Strait Multispecies")
 #' get_survey_id("Hecate Strait Multispecies")
 #' get_survey_id("hecate strait mULTI")
 #' get_survey_id("haida")
 #' head(get_survey_id())
+#' }
 #' @export
 get_survey_id <- function(survey_name = NULL, con = db_connection()) {
   lookup <- dbGetQuery(con, "
@@ -76,9 +82,11 @@ get_survey_id <- function(survey_name = NULL, con = db_connection()) {
 #' @param survey_id A survey ID code 
 #' @param con A connection object to a database
 #'
-#' @examples 
+#' @examples
+#' \dontrun{
 #' get_survey_name(2)
 #' head(get_survey_name())
+#' }
 #' @export
 get_survey_name <- function(survey_id = NULL, con = db_connection()) {
   lookup <- dbGetQuery(con, "

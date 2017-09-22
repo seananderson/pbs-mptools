@@ -15,6 +15,8 @@ get_species_name(species_id = NULL, con = db_connection())
 Get a species name given a species ID
 }
 \examples{
+\dontrun{
 get_species_name(403)
 head(get_species_name())
+}
 }

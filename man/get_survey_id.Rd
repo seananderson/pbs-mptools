@@ -15,9 +15,11 @@ get_survey_id(survey_name = NULL, con = db_connection())
 Uses \code{\link[base]{grep}}
 }
 \examples{
+\dontrun{
 get_survey_id("1989 Hecate Strait Multispecies")
 get_survey_id("Hecate Strait Multispecies")
 get_survey_id("hecate strait mULTI")
 get_survey_id("haida")
 head(get_survey_id())
+}
 }

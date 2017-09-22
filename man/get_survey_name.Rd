@@ -15,6 +15,8 @@ get_survey_name(survey_id = NULL, con = db_connection())
 Get a survey name given a survey ID
 }
 \examples{
+\dontrun{
 get_survey_name(2)
 head(get_survey_name())
+}
 }
