@@ -3,6 +3,7 @@
 export(db_connection)
 export(fit_vb)
 export(get_age_length)
+export(sample_posterior_vb)
 import(Rcpp)
 import(methods)
 importFrom(dplyr,collect)

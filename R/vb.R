@@ -27,3 +27,20 @@ fit_vb <- function(age, length, ...) {
   
   do.call(sampling, sampling_args)
 }
+
+#' Sample from a von Bertalanffy curve posterior 
+#' 
+#' @param model A Stan model fit with \code{\link{fit_vb}}
+#' @param n The number of posterior samples
+#'
+#' @export
+#' @examples
+#' m <- fit_vb(short_age_length$age, short_age_length$length)
+#' set.seed(1)
+#' sample_posterior_vb(m, n = 5)
+
+sample_posterior_vb <- function(model, n = 100) {
+  p <- rstan::extract(model)
+  samples <- base::sample(seq_len(length(p$t0)), n)
+  data.frame(t0 = p$t0[samples], k = p$k[samples], linf = p$linf[samples])
+}
