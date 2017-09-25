@@ -42,5 +42,7 @@ fit_vb <- function(age, length, ...) {
 sample_posterior_vb <- function(model, n = 100) {
   p <- rstan::extract(model)
   samples <- base::sample(seq_len(length(p$t0)), n)
-  data.frame(t0 = p$t0[samples], k = p$k[samples], linf = p$linf[samples])
+  data.frame(t0 = as.numeric(p$t0[samples]), 
+    k = as.numeric(p$k[samples]), 
+    linf = as.numeric(p$linf[samples]))
 }
