@@ -1,7 +1,7 @@
 #' Get age and length data for a given species and survey
 #' 
-#' @param species_id The species number
-#' @param survey_id The survey number
+#' @param species_id The species number (numeric) or name (character)
+#' @param survey_id The survey number (numeric) or name (character)
 #' @param filter_na Remove NAs?
 #' @param con A connection object to a database
 #' 
